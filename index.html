@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grinker Hospital Torreón · Recorrido 360°</title>
+<style>
+:root{--ink:#0b1b1d;--teal:#009d9a;--mist:#e6f2f1;--glass:rgba(11,27,29,.72)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:var(--ink);color:var(--mist);font:15px/1.3 "Segoe UI",system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none}
+#stage{position:fixed;inset:0;transition:opacity .3s;touch-action:none;cursor:grab}
+#stage.fade{opacity:0}#stage:active{cursor:grabbing}
+canvas{display:block;width:100%;height:100%}
+#photo{position:absolute;inset:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000}
+#photo img{max-width:100%;max-height:100%;pointer-events:none;transform-origin:center}
+#photo[hidden]{display:none}
+#hs{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.hs{position:absolute;left:0;top:0;pointer-events:auto;border:0;background:none;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:600 13px "Segoe UI",system-ui,sans-serif}
+.hs i{width:52px;height:52px;border-radius:50%;background:var(--teal);display:grid;place-items:center;font:normal 30px/1 "Segoe UI",sans-serif;box-shadow:0 0 0 6px rgba(0,157,154,.35);transition:transform .15s}
+.hs:hover i,.hs:focus-visible i{transform:scale(1.12)}
+.hs span{background:var(--glass);padding:2px 9px;border-radius:99px}
+.bar{position:fixed;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:var(--glass);backdrop-filter:blur(10px);padding:6px;border-radius:99px;max-width:calc(100vw - 16px)}
+#dots{top:calc(10px + env(safe-area-inset-top,0px))}
+#areas{bottom:calc(12px + env(safe-area-inset-bottom,0px));overflow-x:auto}
+.bar button{border:0;background:none;color:var(--mist);font:inherit;cursor:pointer;border-radius:99px;padding:9px 16px;white-space:nowrap}
+.bar button:hover{background:rgba(255,255,255,.1)}
+#areas button.on{background:var(--teal);color:#fff;font-weight:600}
+#dots button{padding:6px 12px;font-variant-numeric:tabular-nums}
+#dots button.on{background:var(--mist);color:var(--ink);font-weight:600}
+#dots b{font-weight:600;padding:0 8px 0 12px}
+button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+#hud{position:fixed;left:8px;top:64px;background:var(--glass);padding:10px 12px;border-radius:10px;font:12px/1.5 ui-monospace,Consolas,monospace;user-select:text;max-width:340px}
+#hud[hidden]{display:none}#hud code{color:#8ff0ec}
+#err{position:fixed;inset:0;display:grid;place-items:center;text-align:center;padding:24px}
+@media(max-width:560px){.hs i{width:44px;height:44px}#hud{top:60px}}
+@media(prefers-reduced-motion:reduce){#stage,.hs i{transition:none}}
+</style>
+</head>
+<body>
+<div id="stage"><div id="photo" hidden><img alt=""></div><div id="hs"></div></div>
+<div class="bar" id="dots"></div>
+<div class="bar" id="areas" role="tablist"></div>
+<div id="hud" hidden></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(async()=>{
+const $=s=>document.querySelector(s), EDIT=new URLSearchParams(location.search).has('edit');
+const stage=$('#stage'), hsBox=$('#hs'), photo=$('#photo'), pimg=photo.querySelector('img');
+let T;
+try{T=await (await fetch('grinker_tour.json')).json()}
+catch(e){document.body.insertAdjacentHTML('beforeend','<div id="err"><p>No se pudo cargar grinker_tour.json.<br>Abre el visor desde un servidor web (no con doble clic en el archivo).</p></div>');return}
+document.title=T.tour+' · Recorrido 360°';
+const areaOf={}; T.areas.forEach(a=>a.scenes.forEach(id=>areaOf[id]=a));
+
+// ---- Three.js
+const R=new THREE.WebGLRenderer({antialias:true}); R.outputEncoding=THREE.sRGBEncoding; R.setPixelRatio(Math.min(devicePixelRatio,2));
+stage.prepend(R.domElement);
+const sc=new THREE.Scene(), cam=new THREE.PerspectiveCamera(75,1,.1,1100);
+const g=new THREE.SphereGeometry(500,64,40); g.scale(-1,1,1);
+const mat=new THREE.MeshBasicMaterial(), mesh=new THREE.Mesh(g,mat); mesh.rotation.y=Math.PI; sc.add(mesh); // yaw 0 = centro de la imagen
+let lon=0,lat=0,fov=75,W=1,H=1,cur=null,hsList=[];
+const rad=Math.PI/180, vec=(y,p,r=1)=>new THREE.Vector3(Math.cos(p*rad)*Math.cos(y*rad),Math.sin(p*rad),Math.cos(p*rad)*Math.sin(y*rad)).multiplyScalar(r);
+const cache={}, load=id=>cache[id]||(cache[id]=new Promise(ok=>new THREE.TextureLoader().load(T.scenes[id].src,t=>{t.encoding=THREE.sRGBEncoding;ok(t)})));
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+async function go(id,keep){
+  const s=T.scenes[id]; if(!s)return;
+  stage.classList.add('fade');
+  const t=s.type==='photo'?null:await load(id); await wait(250);
+  cur=id;
+  if(s.type==='photo'){R.domElement.style.display='none';photo.hidden=false;pimg.src=s.src;pz=1;px=py=0;applyP()}
+  else{photo.hidden=true;R.domElement.style.display='block';mat.map=t;mat.needsUpdate=true;
+    if(!keep||!isFinite(lon)){const v=s.initialView||{};lon=v.yaw||0;lat=v.pitch||0;fov=v.fov||75}}
+  buildHS(s); buildDots(); markAreas();
+  if(location.hash.slice(1)!==id)history.pushState(null,'','#'+id);
+  stage.classList.remove('fade');
+  (s.hotspots||[]).forEach(h=>T.scenes[h.to].type!=='photo'&&load(h.to)); // precarga vecinas
+}
+function buildHS(s){
+  hsBox.innerHTML=''; hsList=[];
+  (s.hotspots||[]).forEach(h=>{
+    const b=document.createElement('button'); b.className='hs'; b.setAttribute('aria-label',h.label+' · '+h.to);
+    b.innerHTML='<i>'+(h.label==='Anterior'?'‹':'›')+'</i><span>'+(EDIT?h.to:h.label)+'</span>';
+    b.onclick=e=>{e.stopPropagation();go(h.to,true)}; b.onpointerdown=e=>e.stopPropagation();
+    hsBox.appendChild(b); hsList.push({b,v:vec(h.yaw,h.pitch,400)});
+  });
+}
+// ---- UI
+const areasEl=$('#areas'), dotsEl=$('#dots');
+T.areas.forEach(a=>{const b=document.createElement('button');b.textContent=a.label;b.dataset.a=a.id;b.onclick=()=>go(a.scenes[0]);areasEl.appendChild(b)});
+function markAreas(){areasEl.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.a===areaOf[cur].id))}
+function buildDots(){
+  const a=areaOf[cur], i=a.scenes.indexOf(cur); dotsEl.innerHTML='';
+  const step=d=>{const n=a.scenes[i+d]; if(n)go(n)};
+  const mk=(t,f,on,l)=>{const b=document.createElement('button');b.textContent=t;b.onclick=f;if(on)b.className='on';if(l)b.setAttribute('aria-label',l);dotsEl.appendChild(b)};
+  const nm=document.createElement('b');nm.textContent=a.label;dotsEl.appendChild(nm);
+  mk('‹',()=>step(-1),0,'Escena anterior');
+  a.scenes.forEach((id,k)=>mk(String(k+1).padStart(2,'0'),()=>go(id),id===cur));
+  mk('›',()=>step(1),0,'Escena siguiente');
+}
+// ---- Interacción (arrastre, zoom, pinch)
+let ptrs=new Map(),moved=0,pz=1,px=0,py=0,pd=0;
+const applyP=()=>pimg.style.transform=`translate(${px}px,${py}px) scale(${pz})`;
+const isPhoto=()=>!photo.hidden;
+stage.addEventListener('pointerdown',e=>{stage.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);moved=0;pd=0});
+stage.addEventListener('pointermove',e=>{
+  const p=ptrs.get(e.pointerId); if(!p)return;
+  const dx=e.clientX-p[0],dy=e.clientY-p[1]; moved+=Math.abs(dx)+Math.abs(dy);
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]); if(pd)zoom(d/pd); pd=d}
+  else if(isPhoto()){px+=dx;py+=dy;applyP()}
+  else{const k=fov/H*1.0; lon-=dx*k; lat=Math.max(-85,Math.min(85,lat+dy*k))}
+  ptrs.set(e.pointerId,[e.clientX,e.clientY]);
+});
+const up=e=>{ptrs.delete(e.pointerId);pd=0};
+stage.addEventListener('pointerup',e=>{
+  if(EDIT&&moved<6&&!isPhoto()&&ptrs.size===1){
+    const v=new THREE.Vector3(e.clientX/W*2-1,-(e.clientY/H)*2+1,.5).unproject(cam).sub(cam.position).normalize();
+    const y=+(Math.atan2(v.z,v.x)/rad).toFixed(1),p=+(Math.asin(v.y)/rad).toFixed(1),h=$('#hud');
+    const snip=`{ "to": "", "yaw": ${y}, "pitch": ${p}, "label": "Siguiente" }`;
+    h.hidden=false;h.innerHTML='Clic en yaw <code>'+y+'</code>, pitch <code>'+p+'</code><br>Copiado:<br><code>'+snip+'</code>';
+    navigator.clipboard&&navigator.clipboard.writeText(snip).catch(()=>{});
+  } up(e)});
+stage.addEventListener('pointercancel',up);
+function zoom(f){if(isPhoto()){pz=Math.max(1,Math.min(5,pz*f));if(pz===1)px=py=0;applyP()}else{fov=Math.max(30,Math.min(100,fov/f))}}
+stage.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY<0?1.1:.9)},{passive:false});
+addEventListener('keydown',e=>{const k=e.key;if(k==='ArrowLeft')lon-=4;if(k==='ArrowRight')lon+=4;if(k==='ArrowUp')lat=Math.min(85,lat+3);if(k==='ArrowDown')lat=Math.max(-85,lat-3);if(k==='+')zoom(1.1);if(k==='-')zoom(.9)});
+addEventListener('popstate',()=>{const id=location.hash.slice(1);if(T.scenes[id]&&id!==cur)go(id)});
+function resize(){W=innerWidth;H=innerHeight;R.setSize(W,H);cam.aspect=W/H;cam.updateProjectionMatrix()}
+addEventListener('resize',resize);resize();
+// ---- Loop
+(function loop(){
+  requestAnimationFrame(loop);
+  if(!cur||isPhoto())return;
+  cam.fov=fov;cam.updateProjectionMatrix();
+  cam.lookAt(vec(lon,lat,10)); R.render(sc,cam);
+  cam.updateMatrixWorld();
+  hsList.forEach(({b,v})=>{const p=v.clone().project(cam),ok=p.z<1;b.style.display=ok?'':'none';
+    if(ok)b.style.transform=`translate(${(p.x*.5+.5)*W}px,${(-p.y*.5+.5)*H}px) translate(-50%,-50%)`});
+})();
+if(EDIT){$('#hud').hidden=false;$('#hud').innerHTML='Modo edición: haz clic donde debe ir el hotspot. Se copia el JSON al portapapeles.'}
+const start=location.hash.slice(1);
+go(T.scenes[start]?start:T.areas.find(a=>a.id===T.startArea).scenes[0]);
+})();
+</script>
+</body>
+</html>
