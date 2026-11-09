@@ -32,6 +32,10 @@ button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 #hud{position:fixed;left:8px;top:64px;background:var(--glass);padding:10px 12px;border-radius:10px;font:12px/1.5 ui-monospace,Consolas,monospace;user-select:text;max-width:340px}
 #hud[hidden]{display:none}#hud code{color:#8ff0ec}
 #err{position:fixed;inset:0;display:grid;place-items:center;text-align:center;padding:24px}
+#loadError{position:fixed;z-index:20;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,calc(100vw - 32px));padding:18px 20px;border:1px solid rgba(255,255,255,.18);border-radius:14px;background:rgba(8,18,22,.94);color:#fff;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+#loadError[hidden]{display:none}#loadError p{margin:8px 0 14px;color:#c9d9dc}#loadError button{border:0;border-radius:99px;padding:9px 16px;background:var(--teal);color:#fff;font:inherit;cursor:pointer}
+#hs.photo-nav{display:flex;justify-content:center;align-items:flex-end;gap:14px;padding:0 12px 12vh}
+.hs.photo-hs{position:relative;left:auto;top:auto;transform:none!important}
 @media(max-width:560px){.hs i{width:44px;height:44px}#hud{top:60px}}
 @media(prefers-reduced-motion:reduce){#stage,.hs i{transition:none}}
 </style>
@@ -41,6 +45,7 @@ button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 <div class="bar" id="dots"></div>
 <div class="bar" id="areas" role="tablist"></div>
 <div id="hud" hidden></div>
+<div id="loadError" hidden role="alert"><strong>No se pudo cargar esta escena</strong><p id="loadErrorText"></p><button id="retryScene" type="button">Reintentar</button></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (async()=>{
@@ -60,29 +65,58 @@ const g=new THREE.SphereGeometry(500,64,40); g.scale(-1,1,1);
 const mat=new THREE.MeshBasicMaterial(), mesh=new THREE.Mesh(g,mat); mesh.rotation.y=Math.PI; sc.add(mesh); // yaw 0 = centro de la imagen
 let lon=0,lat=0,fov=75,W=1,H=1,cur=null,hsList=[];
 const rad=Math.PI/180, vec=(y,p,r=1)=>new THREE.Vector3(Math.cos(p*rad)*Math.cos(y*rad),Math.sin(p*rad),Math.cos(p*rad)*Math.sin(y*rad)).multiplyScalar(r);
-const cache={}, load=id=>cache[id]||(cache[id]=new Promise(ok=>new THREE.TextureLoader().load(T.scenes[id].src,t=>{t.encoding=THREE.sRGBEncoding;ok(t)})));
+const cache={}, load=id=>cache[id]||(cache[id]=new Promise((resolve,reject)=>new THREE.TextureLoader().load(T.scenes[id].src,t=>{t.encoding=THREE.sRGBEncoding;resolve(t)},undefined,e=>{delete cache[id];reject(new Error('No se pudo cargar: '+T.scenes[id].src))})));
+const loadPhoto=src=>new Promise((resolve,reject)=>{const probe=new Image();probe.onload=()=>resolve();probe.onerror=()=>reject(new Error('No se pudo cargar: '+src));probe.src=src;});
+let navToken=0;
+let retrySceneId=null;
+const showLoadError=msg=>{$('#loadErrorText').textContent=msg;$('#loadError').hidden=false;};
+$('#retryScene').onclick=()=>{if(retrySceneId)go(retrySceneId,false);};
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 
 async function go(id,keep){
-  const s=T.scenes[id]; if(!s)return;
+  const s=T.scenes[id];
+  if(!s){showLoadError('La escena "'+id+'" no existe en grinker_tour.json.');return;}
+  const token=++navToken;
+  retrySceneId=id;
+  $('#loadError').hidden=true;
   stage.classList.add('fade');
-  const t=s.type==='photo'?null:await load(id); await wait(250);
-  cur=id;
-  if(s.type==='photo'){R.domElement.style.display='none';photo.hidden=false;pimg.src=s.src;pz=1;px=py=0;applyP()}
-  else{photo.hidden=true;R.domElement.style.display='block';mat.map=t;mat.needsUpdate=true;
-    if(!keep||!isFinite(lon)){const v=s.initialView||{};lon=v.yaw||0;lat=v.pitch||0;fov=v.fov||75}}
-  buildHS(s); buildDots(); markAreas();
-  if(location.hash.slice(1)!==id)history.pushState(null,'','#'+id);
-  stage.classList.remove('fade');
-  (s.hotspots||[]).forEach(h=>T.scenes[h.to].type!=='photo'&&load(h.to)); // precarga vecinas
+  try{
+    const t=s.type==='photo'?null:await load(id);
+    if(s.type==='photo')await loadPhoto(s.src);
+    if(token!==navToken)return;
+    await wait(180);
+    cur=id;
+    if(s.type==='photo'){
+      R.domElement.style.display='none';photo.hidden=false;pimg.src=s.src;
+      pimg.alt=s.alt||('Fotografía '+id);pz=1;px=py=0;applyP();
+    }else{
+      photo.hidden=true;R.domElement.style.display='block';mat.map=t;mat.needsUpdate=true;
+      if(!keep||!isFinite(lon)){const v=s.initialView||{};lon=v.yaw??0;lat=v.pitch??0;fov=v.fov??75;}
+    }
+    buildHS(s);buildDots();markAreas();
+    if(location.hash.slice(1)!==id)history.pushState(null,'','#'+id);
+    stage.classList.remove('fade');
+    (s.hotspots||[]).forEach(h=>{if(T.scenes[h.to]&&T.scenes[h.to].type==='pano')load(h.to).catch(()=>{});});
+  }catch(err){
+    if(token!==navToken)return;
+    stage.classList.remove('fade');
+    showLoadError(err.message||'Comprueba que el archivo exista y que su ruta sea correcta.');
+    console.error('[Grinker Tour]',err);
+  }
 }
 function buildHS(s){
-  hsBox.innerHTML=''; hsList=[];
+  hsBox.innerHTML='';hsList=[];
+  const flat=s.type==='photo';
+  hsBox.classList.toggle('photo-nav',flat);
   (s.hotspots||[]).forEach(h=>{
-    const b=document.createElement('button'); b.className='hs'; b.setAttribute('aria-label',h.label+' · '+h.to);
-    b.innerHTML='<i>'+(h.label==='Anterior'?'‹':'›')+'</i><span>'+(EDIT?h.to:h.label)+'</span>';
-    b.onclick=e=>{e.stopPropagation();go(h.to,true)}; b.onpointerdown=e=>e.stopPropagation();
-    hsBox.appendChild(b); hsList.push({b,v:vec(h.yaw,h.pitch,400)});
+    const b=document.createElement('button');
+    b.className='hs'+(flat?' photo-hs':'');
+    b.setAttribute('aria-label',(h.label||'Ir a escena')+' · '+h.to);
+    b.innerHTML='<i>'+(h.label==='Anterior'?'‹':'›')+'</i><span>'+(EDIT?h.to:(h.label||h.to))+'</span>';
+    b.onclick=e=>{e.stopPropagation();go(h.to,true)};
+    b.onpointerdown=e=>e.stopPropagation();
+    hsBox.appendChild(b);
+    if(!flat)hsList.push({b,v:vec(h.yaw,h.pitch,400)});
   });
 }
 // ---- UI
@@ -118,7 +152,7 @@ stage.addEventListener('pointerup',e=>{
     const y=+(Math.atan2(v.z,v.x)/rad).toFixed(1),p=+(Math.asin(v.y)/rad).toFixed(1),h=$('#hud');
     const snip=`{ "to": "", "yaw": ${y}, "pitch": ${p}, "label": "Siguiente" }`;
     h.hidden=false;h.innerHTML='Clic en yaw <code>'+y+'</code>, pitch <code>'+p+'</code><br>Copiado:<br><code>'+snip+'</code>';
-    navigator.clipboard&&navigator.clipboard.writeText(snip).catch(()=>{});
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(snip).then(()=>{h.innerHTML+=' <br><strong>Copiado al portapapeles.</strong>';}).catch(()=>{h.innerHTML+=' <br><strong>Copia manualmente el fragmento.</strong>';});}else{h.innerHTML+=' <br><strong>Copia manualmente el fragmento.</strong>';}
   } up(e)});
 stage.addEventListener('pointercancel',up);
 function zoom(f){if(isPhoto()){pz=Math.max(1,Math.min(5,pz*f));if(pz===1)px=py=0;applyP()}else{fov=Math.max(30,Math.min(100,fov/f))}}
@@ -134,10 +168,10 @@ addEventListener('resize',resize);resize();
   cam.fov=fov;cam.updateProjectionMatrix();
   cam.lookAt(vec(lon,lat,10)); R.render(sc,cam);
   cam.updateMatrixWorld();
-  hsList.forEach(({b,v})=>{const p=v.clone().project(cam),ok=p.z<1;b.style.display=ok?'':'none';
+  hsList.forEach(({b,v})=>{const p=v.clone().project(cam),ok=p.z>-1&&p.z<1&&Math.abs(p.x)<=1&&Math.abs(p.y)<=1;b.style.display=ok?'':'none';
     if(ok)b.style.transform=`translate(${(p.x*.5+.5)*W}px,${(-p.y*.5+.5)*H}px) translate(-50%,-50%)`});
 })();
-if(EDIT){$('#hud').hidden=false;$('#hud').innerHTML='Modo edición: haz clic donde debe ir el hotspot. Se copia el JSON al portapapeles.'}
+if(EDIT){$('#hud').hidden=false;$('#hud').innerHTML='Modo edición: haz clic donde debe ir el hotspot. Se copia el JSON al portapapeles. En fotografías planas no se editan coordenadas yaw/pitch.'}
 const start=location.hash.slice(1);
 go(T.scenes[start]?start:T.areas.find(a=>a.id===T.startArea).scenes[0]);
 })();
