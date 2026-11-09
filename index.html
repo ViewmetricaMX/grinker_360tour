@@ -88,7 +88,7 @@ if(typeof THREE==='undefined'){
 }
 const stage=$('#stage'), hsBox=$('#hs'), photo=$('#photo'), pimg=photo.querySelector('img');
 let T;
-try{T=await (await fetch('grinker_tour.json')).json()}
+try{const response=await fetch('grinker_tour.json?v=20261109-quirofano-pano',{cache:'no-store'});if(!response.ok)throw new Error('HTTP '+response.status);T=await response.json()}
 catch(e){document.body.insertAdjacentHTML('beforeend','<div id="err"><p>No se pudo cargar grinker_tour.json.<br>Abre el visor desde un servidor web (no con doble clic en el archivo).</p></div>');return}
 document.title=T.tour+' · Recorrido 360°';
 const areaOf={}; T.areas.forEach(a=>a.scenes.forEach(id=>areaOf[id]=a));
