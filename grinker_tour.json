@@ -311,14 +311,14 @@
       "hotspots": [
         {
           "to": "habitacion-01",
-          "yaw": -92,
-          "pitch": -38,
+          "yaw": -42.6,
+          "pitch": -20.5,
           "label": "Anterior"
         },
         {
           "to": "habitacion-03",
-          "yaw": -92.3,
-          "pitch": -32.2,
+          "yaw": -92.9,
+          "pitch": -32.5,
           "label": "Siguiente"
         }
       ]
