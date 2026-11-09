@@ -334,14 +334,14 @@
       "hotspots": [
         {
           "to": "habitacion-02",
-          "yaw": -60,
-          "pitch": -38,
+          "yaw": 7.3,
+          "pitch": -28.6,
           "label": "Anterior"
         },
         {
           "to": "habitacion-04",
-          "yaw": 150,
-          "pitch": -38,
+          "yaw": -86.9,
+          "pitch": -34.7,
           "label": "Siguiente"
         }
       ]
