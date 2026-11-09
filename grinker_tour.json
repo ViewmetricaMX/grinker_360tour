@@ -382,7 +382,7 @@
           "to": "quirofano-01",
           "yaw": 106.5,
           "pitch": -19,
-          "label": "Volver a quirófano 01"
+          "label": "Anterior"
         },
         {
           "to": "quirofano-03",
@@ -403,9 +403,9 @@
       "hotspots": [
         {
           "to": "quirofano-02",
-          "yaw": -55,
-          "pitch": -27,
-          "label": "Volver a quirófano 02"
+          "yaw": -125,
+          "pitch": -29.9,
+          "label": "Anterior"
         }
       ],
       "initialView": {
