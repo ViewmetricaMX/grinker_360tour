@@ -368,9 +368,9 @@
       "hotspots": [
         {
           "to": "quirofano-02",
-          "yaw": 65,
-          "pitch": -38,
-          "label": "Siguiente"
+          "yaw": 55,
+          "pitch": -27,
+          "label": "Ir a quirófano 02"
         }
       ]
     },
@@ -380,15 +380,15 @@
       "hotspots": [
         {
           "to": "quirofano-01",
-          "yaw": 110,
-          "pitch": -38,
-          "label": "Anterior"
+          "yaw": -32,
+          "pitch": -28,
+          "label": "Volver a quirófano 01"
         },
         {
           "to": "quirofano-03",
-          "yaw": -65,
-          "pitch": -38,
-          "label": "Siguiente"
+          "yaw": 65,
+          "pitch": -28,
+          "label": "Ir a quirófano 03"
         }
       ],
       "initialView": {
@@ -403,9 +403,9 @@
       "hotspots": [
         {
           "to": "quirofano-02",
-          "yaw": -120,
-          "pitch": -38,
-          "label": "Anterior"
+          "yaw": -55,
+          "pitch": -27,
+          "label": "Volver a quirófano 02"
         }
       ],
       "initialView": {
