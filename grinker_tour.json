@@ -94,8 +94,8 @@
         },
         {
           "to": "urgencias-03",
-          "yaw": 70,
-          "pitch": -38,
+          "yaw": -154.4,
+          "pitch": -37.5,
           "label": "Siguiente"
         }
       ]
