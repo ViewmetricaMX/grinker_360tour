@@ -208,8 +208,8 @@
       "hotspots": [
         {
           "to": "fertilidad-02",
-          "yaw": 115,
-          "pitch": -38,
+          "yaw": -15,
+          "pitch": -34.1,
           "label": "Siguiente"
         }
       ]
