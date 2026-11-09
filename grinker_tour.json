@@ -359,7 +359,7 @@
     },
     "quirofano-01": {
       "type": "pano",
-      "src": "img/quirofano/quirofano_01.jpg",
+      "src": "img/quirofano/quirofano-01.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -376,7 +376,7 @@
     },
     "quirofano-02": {
       "type": "pano",
-      "src": "img/quirofano/quirofano_02.jpg",
+      "src": "img/quirofano/quirofano-02.jpg",
       "hotspots": [
         {
           "to": "quirofano-01",
@@ -399,7 +399,7 @@
     },
     "quirofano-03": {
       "type": "pano",
-      "src": "img/quirofano/quirofano_03.jpg",
+      "src": "img/quirofano/quirofano-03.jpg",
       "hotspots": [
         {
           "to": "quirofano-02",
