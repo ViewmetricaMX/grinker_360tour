@@ -386,9 +386,9 @@
         },
         {
           "to": "quirofano-03",
-          "yaw": 65,
-          "pitch": -28,
-          "label": "Ir a quirófano 03"
+          "yaw": 168.3,
+          "pitch": -34,
+          "label": "Siguiente"
         }
       ],
       "initialView": {
