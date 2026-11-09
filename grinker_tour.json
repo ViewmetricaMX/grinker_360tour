@@ -225,14 +225,14 @@
       "hotspots": [
         {
           "to": "fertilidad-01",
-          "yaw": -150,
-          "pitch": -38,
+          "yaw": 79.6,
+          "pitch": -33.9,
           "label": "Anterior"
         },
         {
           "to": "fertilidad-03",
-          "yaw": 5,
-          "pitch": -38,
+          "yaw": -149.7,
+          "pitch": -32.1,
           "label": "Siguiente"
         }
       ]
