@@ -317,8 +317,8 @@
         },
         {
           "to": "habitacion-03",
-          "yaw": 60,
-          "pitch": -38,
+          "yaw": -92.3,
+          "pitch": -32.2,
           "label": "Siguiente"
         }
       ]
