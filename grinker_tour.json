@@ -274,6 +274,12 @@
           "yaw": 55,
           "pitch": -38,
           "label": "Anterior"
+        },
+        {
+          "to": "fertilidad-01",
+          "yaw": 91.1,
+          "pitch": -23.3,
+          "label": "Volver a Fertilidad 01"
         }
       ]
     },
