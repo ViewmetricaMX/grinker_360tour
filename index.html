@@ -50,6 +50,20 @@ button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 <script>
 (async()=>{
 const $=s=>document.querySelector(s), EDIT=new URLSearchParams(location.search).has('edit');
+// Three.js CDN de respaldo: si cdnjs falla, intenta jsDelivr.
+if(typeof THREE==='undefined'){
+  try{
+    await new Promise((resolve,reject)=>{
+      const script=document.createElement('script');
+      script.src='https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js';
+      script.onload=resolve;script.onerror=()=>reject(new Error('No se pudo cargar Three.js desde cdnjs ni jsDelivr.'));
+      document.head.appendChild(script);
+    });
+  }catch(err){
+    document.body.insertAdjacentHTML('beforeend','<div id="loadError" style="position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#0b1b1d;color:#fff;padding:24px;text-align:center"><div><h2>No se pudo iniciar el visor 360°</h2><p style="margin-top:12px">No se pudo descargar la biblioteca Three.js. Comprueba tu conexión o el bloqueo de CDN.</p><p style="margin-top:12px;font-size:12px">'+err.message+'</p></div></div>');
+    console.error('[Grinker Tour]',err);return;
+  }
+}
 const stage=$('#stage'), hsBox=$('#hs'), photo=$('#photo'), pimg=photo.querySelector('img');
 let T;
 try{T=await (await fetch('grinker_tour.json')).json()}
@@ -58,7 +72,13 @@ document.title=T.tour+' · Recorrido 360°';
 const areaOf={}; T.areas.forEach(a=>a.scenes.forEach(id=>areaOf[id]=a));
 
 // ---- Three.js
-const R=new THREE.WebGLRenderer({antialias:true}); R.outputEncoding=THREE.sRGBEncoding; R.setPixelRatio(Math.min(devicePixelRatio,2));
+let R;
+try{R=new THREE.WebGLRenderer({antialias:true});}
+catch(err){
+  document.body.insertAdjacentHTML('beforeend','<div id="loadError" style="position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#0b1b1d;color:#fff;padding:24px;text-align:center"><div><h2>No se pudo iniciar el visor 360°</h2><p style="margin-top:12px">El navegador no pudo crear el contexto WebGL. Prueba activar la aceleración por hardware o usar Chrome/Edge actualizado.</p></div></div>');
+  console.error('[Grinker Tour] WebGL no disponible',err);return;
+}
+R.outputEncoding=THREE.sRGBEncoding; R.setPixelRatio(Math.min(devicePixelRatio,2));
 stage.prepend(R.domElement);
 const sc=new THREE.Scene(), cam=new THREE.PerspectiveCamera(75,1,.1,1100);
 const g=new THREE.SphereGeometry(500,64,40); g.scale(-1,1,1);
