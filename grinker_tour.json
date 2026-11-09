@@ -380,8 +380,8 @@
       "hotspots": [
         {
           "to": "quirofano-01",
-          "yaw": -32,
-          "pitch": -28,
+          "yaw": 106.5,
+          "pitch": -19,
           "label": "Volver a quirófano 01"
         },
         {
