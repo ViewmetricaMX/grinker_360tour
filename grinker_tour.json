@@ -62,7 +62,7 @@
   "scenes": {
     "urgencias-01": {
       "type": "pano",
-      "src": "urgencias-01.jpg",
+      "src": "img/urgencias/urgencias-01.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -79,7 +79,7 @@
     },
     "urgencias-02": {
       "type": "pano",
-      "src": "urgencias-02.jpg",
+      "src": "img/urgencias/urgencias-02.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -102,7 +102,7 @@
     },
     "urgencias-03": {
       "type": "pano",
-      "src": "urgencias-03.jpg",
+      "src": "img/urgencias/urgencias-03.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -125,7 +125,7 @@
     },
     "urgencias-04": {
       "type": "pano",
-      "src": "urgencias-04.jpg",
+      "src": "img/urgencias/urgencias-04.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -142,7 +142,7 @@
     },
     "consultorio-01": {
       "type": "pano",
-      "src": "consultorio-01.jpg",
+      "src": "img/consultorio/consultorio-01.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -159,7 +159,7 @@
     },
     "consultorio-02": {
       "type": "pano",
-      "src": "consultorio-02.jpg",
+      "src": "img/consultorio/consultorio-02.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -182,7 +182,7 @@
     },
     "consultorio-03": {
       "type": "pano",
-      "src": "consultorio-03.jpg",
+      "src": "img/consultorio/consultorio-03.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -199,7 +199,7 @@
     },
     "fertilidad-01": {
       "type": "pano",
-      "src": "fertilidad-01.jpg",
+      "src": "img/fertilidad/fertilidad-01.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -216,7 +216,7 @@
     },
     "fertilidad-02": {
       "type": "pano",
-      "src": "fertilidad-02.jpg",
+      "src": "img/fertilidad/fertilidad-02.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -239,7 +239,7 @@
     },
     "fertilidad-03": {
       "type": "pano",
-      "src": "fertilidad-03.jpg",
+      "src": "img/fertilidad/fertilidad-03.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -262,7 +262,7 @@
     },
     "fertilidad-04": {
       "type": "pano",
-      "src": "fertilidad-04.jpg",
+      "src": "img/fertilidad/fertilidad-04.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -279,7 +279,7 @@
     },
     "habitacion-01": {
       "type": "pano",
-      "src": "habitacion-01.jpg",
+      "src": "img/habitacion/habitacion-01.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -296,7 +296,7 @@
     },
     "habitacion-02": {
       "type": "pano",
-      "src": "habitacion-02.jpg",
+      "src": "img/habitacion/habitacion-02.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -319,7 +319,7 @@
     },
     "habitacion-03": {
       "type": "pano",
-      "src": "habitacion-03.jpg",
+      "src": "img/habitacion/habitacion-03.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -342,7 +342,7 @@
     },
     "habitacion-04": {
       "type": "pano",
-      "src": "habitacion-04.jpg",
+      "src": "img/habitacion/habitacion-04.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -359,7 +359,7 @@
     },
     "quirofano-01": {
       "type": "pano",
-      "src": "quirofano-01.jpg",
+      "src": "img/quirofano/quirofano-01.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -376,7 +376,7 @@
     },
     "quirofano-02": {
       "type": "photo",
-      "src": "quirofano-02.jpg",
+      "src": "img/quirofano/quirofano-02.jpg",
       "hotspots": [
         {
           "to": "quirofano-01",
@@ -394,7 +394,7 @@
     },
     "quirofano-03": {
       "type": "photo",
-      "src": "quirofano-03.jpg",
+      "src": "img/quirofano/quirofano-03.jpg",
       "hotspots": [
         {
           "to": "quirofano-02",
@@ -406,7 +406,7 @@
     },
     "tomografia-01": {
       "type": "pano",
-      "src": "tomografia-01.jpg",
+      "src": "img/tomografia/tomografia-01.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -423,7 +423,7 @@
     },
     "tomografia-02": {
       "type": "pano",
-      "src": "tomografia-02.jpg",
+      "src": "img/tomografia/tomografia-02.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
