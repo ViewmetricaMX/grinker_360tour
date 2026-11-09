@@ -359,7 +359,7 @@
     },
     "quirofano-01": {
       "type": "pano",
-      "src": "img/quirofano/quirofano-01.jpg",
+      "src": "img/quirofano/quirofano_01.jpg",
       "initialView": {
         "yaw": 0,
         "pitch": 0,
@@ -368,41 +368,51 @@
       "hotspots": [
         {
           "to": "quirofano-02",
-          "yaw": 31,
+          "yaw": 65,
           "pitch": -38,
           "label": "Siguiente"
         }
       ]
     },
     "quirofano-02": {
-      "type": "photo",
-      "src": "img/quirofano/quirofano-02.jpg",
+      "type": "pano",
+      "src": "img/quirofano/quirofano_02.jpg",
       "hotspots": [
         {
           "to": "quirofano-01",
-          "yaw": 0,
-          "pitch": 0,
+          "yaw": 110,
+          "pitch": -38,
           "label": "Anterior"
         },
         {
           "to": "quirofano-03",
-          "yaw": 0,
-          "pitch": 0,
+          "yaw": -65,
+          "pitch": -38,
           "label": "Siguiente"
         }
-      ]
+      ],
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      }
     },
     "quirofano-03": {
-      "type": "photo",
-      "src": "img/quirofano/quirofano-03.jpg",
+      "type": "pano",
+      "src": "img/quirofano/quirofano_03.jpg",
       "hotspots": [
         {
           "to": "quirofano-02",
-          "yaw": 0,
-          "pitch": 0,
+          "yaw": -120,
+          "pitch": -38,
           "label": "Anterior"
         }
-      ]
+      ],
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      }
     },
     "tomografia-01": {
       "type": "pano",
