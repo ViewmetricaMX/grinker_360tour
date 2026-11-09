@@ -1,420 +1,442 @@
 {
- "tour": "Grinker Hospital Torreón",
- "startArea": "urgencias",
- "areas": [
-  {
-   "id": "urgencias",
-   "label": "Urgencias",
-   "scenes": [
-    "urgencias-01",
-    "urgencias-02",
-    "urgencias-03",
-    "urgencias-04"
-   ]
-  },
-  {
-   "id": "consultorio",
-   "label": "Consultorio",
-   "scenes": [
-    "consultorio-01",
-    "consultorio-02",
-    "consultorio-03"
-   ]
-  },
-  {
-   "id": "fertilidad",
-   "label": "Fertilidad",
-   "scenes": [
-    "fertilidad-01",
-    "fertilidad-02",
-    "fertilidad-03",
-    "fertilidad-04"
-   ]
-  },
-  {
-   "id": "habitacion",
-   "label": "Habitación",
-   "scenes": [
-    "habitacion-01",
-    "habitacion-02",
-    "habitacion-03",
-    "habitacion-04"
-   ]
-  },
-  {
-   "id": "quirofano",
-   "label": "Quirófano",
-   "scenes": [
-    "quirofano-01",
-    "quirofano-02",
-    "quirofano-03"
-   ]
-  },
-  {
-   "id": "tomografia",
-   "label": "Tomografía",
-   "scenes": [
-    "tomografia-01",
-    "tomografia-02"
-   ]
+  "tour": "Grinker Hospital Torreón",
+  "startArea": "urgencias",
+  "areas": [
+    {
+      "id": "urgencias",
+      "label": "Urgencias",
+      "scenes": [
+        "urgencias-01",
+        "urgencias-02",
+        "urgencias-03",
+        "urgencias-04"
+      ]
+    },
+    {
+      "id": "consultorio",
+      "label": "Consultorio",
+      "scenes": [
+        "consultorio-01",
+        "consultorio-02",
+        "consultorio-03"
+      ]
+    },
+    {
+      "id": "fertilidad",
+      "label": "Fertilidad",
+      "scenes": [
+        "fertilidad-01",
+        "fertilidad-02",
+        "fertilidad-03",
+        "fertilidad-04"
+      ]
+    },
+    {
+      "id": "habitacion",
+      "label": "Habitación",
+      "scenes": [
+        "habitacion-01",
+        "habitacion-02",
+        "habitacion-03",
+        "habitacion-04"
+      ]
+    },
+    {
+      "id": "quirofano",
+      "label": "Quirófano",
+      "scenes": [
+        "quirofano-01",
+        "quirofano-02",
+        "quirofano-03"
+      ]
+    },
+    {
+      "id": "tomografia",
+      "label": "Tomografía",
+      "scenes": [
+        "tomografia-01",
+        "tomografia-02"
+      ]
+    }
+  ],
+  "scenes": {
+    "urgencias-01": {
+      "type": "pano",
+      "src": "urgencias-01.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "urgencias-02",
+          "yaw": 8,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "urgencias-02": {
+      "type": "pano",
+      "src": "urgencias-02.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "urgencias-01",
+          "yaw": -144,
+          "pitch": -5,
+          "label": "Anterior"
+        },
+        {
+          "to": "urgencias-03",
+          "yaw": 70,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "urgencias-03": {
+      "type": "pano",
+      "src": "urgencias-03.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "urgencias-02",
+          "yaw": -150,
+          "pitch": -5,
+          "label": "Anterior"
+        },
+        {
+          "to": "urgencias-04",
+          "yaw": -60,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "urgencias-04": {
+      "type": "pano",
+      "src": "urgencias-04.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "urgencias-03",
+          "yaw": 5,
+          "pitch": -5,
+          "label": "Anterior"
+        }
+      ]
+    },
+    "consultorio-01": {
+      "type": "pano",
+      "src": "consultorio-01.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "consultorio-02",
+          "yaw": 30,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "consultorio-02": {
+      "type": "pano",
+      "src": "consultorio-02.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "consultorio-01",
+          "yaw": -83,
+          "pitch": -5,
+          "label": "Anterior"
+        },
+        {
+          "to": "consultorio-03",
+          "yaw": 98,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "consultorio-03": {
+      "type": "pano",
+      "src": "consultorio-03.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "consultorio-02",
+          "yaw": 52,
+          "pitch": -5,
+          "label": "Anterior"
+        }
+      ]
+    },
+    "fertilidad-01": {
+      "type": "pano",
+      "src": "fertilidad-01.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "fertilidad-02",
+          "yaw": 115,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "fertilidad-02": {
+      "type": "pano",
+      "src": "fertilidad-02.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "fertilidad-01",
+          "yaw": -150,
+          "pitch": -5,
+          "label": "Anterior"
+        },
+        {
+          "to": "fertilidad-03",
+          "yaw": 5,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "fertilidad-03": {
+      "type": "pano",
+      "src": "fertilidad-03.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "fertilidad-02",
+          "yaw": -150,
+          "pitch": -5,
+          "label": "Anterior"
+        },
+        {
+          "to": "fertilidad-04",
+          "yaw": 5,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "fertilidad-04": {
+      "type": "pano",
+      "src": "fertilidad-04.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "fertilidad-03",
+          "yaw": 55,
+          "pitch": -5,
+          "label": "Anterior"
+        }
+      ]
+    },
+    "habitacion-01": {
+      "type": "pano",
+      "src": "habitacion-01.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "habitacion-02",
+          "yaw": 94,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "habitacion-02": {
+      "type": "pano",
+      "src": "habitacion-02.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "habitacion-01",
+          "yaw": -92,
+          "pitch": -5,
+          "label": "Anterior"
+        },
+        {
+          "to": "habitacion-03",
+          "yaw": 60,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "habitacion-03": {
+      "type": "pano",
+      "src": "habitacion-03.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "habitacion-02",
+          "yaw": -60,
+          "pitch": -5,
+          "label": "Anterior"
+        },
+        {
+          "to": "habitacion-04",
+          "yaw": 150,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "habitacion-04": {
+      "type": "pano",
+      "src": "habitacion-04.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "habitacion-03",
+          "yaw": -100,
+          "pitch": -5,
+          "label": "Anterior"
+        }
+      ]
+    },
+    "quirofano-01": {
+      "type": "pano",
+      "src": "quirofano-01.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "quirofano-02",
+          "yaw": 31,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "quirofano-02": {
+      "type": "photo",
+      "src": "quirofano-02.jpg",
+      "hotspots": [
+        {
+          "to": "quirofano-01",
+          "yaw": 0,
+          "pitch": 0,
+          "label": "Anterior"
+        },
+        {
+          "to": "quirofano-03",
+          "yaw": 0,
+          "pitch": 0,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "quirofano-03": {
+      "type": "photo",
+      "src": "quirofano-03.jpg",
+      "hotspots": [
+        {
+          "to": "quirofano-02",
+          "yaw": 0,
+          "pitch": 0,
+          "label": "Anterior"
+        }
+      ]
+    },
+    "tomografia-01": {
+      "type": "pano",
+      "src": "tomografia-01.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "tomografia-02",
+          "yaw": -3,
+          "pitch": -5,
+          "label": "Siguiente"
+        }
+      ]
+    },
+    "tomografia-02": {
+      "type": "pano",
+      "src": "tomografia-02.jpg",
+      "initialView": {
+        "yaw": 0,
+        "pitch": 0,
+        "fov": 75
+      },
+      "hotspots": [
+        {
+          "to": "tomografia-01",
+          "yaw": 20,
+          "pitch": -5,
+          "label": "Anterior"
+        }
+      ]
+    }
   }
- ],
- "scenes": {
-  "urgencias-01": {
-   "type": "pano",
-   "src": "img/urgencias/urgencias-01.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "urgencias-02",
-     "yaw": 8,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "urgencias-02": {
-   "type": "pano",
-   "src": "img/urgencias/urgencias-02.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "urgencias-01",
-     "yaw": -144,
-     "pitch": -5,
-     "label": "Anterior"
-    },
-    {
-     "to": "urgencias-03",
-     "yaw": 70,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "urgencias-03": {
-   "type": "pano",
-   "src": "img/urgencias/urgencias-03.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "urgencias-02",
-     "yaw": -150,
-     "pitch": -5,
-     "label": "Anterior"
-    },
-    {
-     "to": "urgencias-04",
-     "yaw": -60,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "urgencias-04": {
-   "type": "pano",
-   "src": "img/urgencias/urgencias-04.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "urgencias-03",
-     "yaw": 5,
-     "pitch": -5,
-     "label": "Anterior"
-    }
-   ]
-  },
-  "consultorio-01": {
-   "type": "pano",
-   "src": "img/consultorio/consultorio-01.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "consultorio-02",
-     "yaw": 30,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "consultorio-02": {
-   "type": "pano",
-   "src": "img/consultorio/consultorio-02.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "consultorio-01",
-     "yaw": -83,
-     "pitch": -5,
-     "label": "Anterior"
-    },
-    {
-     "to": "consultorio-03",
-     "yaw": 98,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "consultorio-03": {
-   "type": "pano",
-   "src": "img/consultorio/consultorio-03.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "consultorio-02",
-     "yaw": 52,
-     "pitch": -5,
-     "label": "Anterior"
-    }
-   ]
-  },
-  "fertilidad-01": {
-   "type": "pano",
-   "src": "img/fertilidad/fertilidad-01.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "fertilidad-02",
-     "yaw": 115,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "fertilidad-02": {
-   "type": "pano",
-   "src": "img/fertilidad/fertilidad-02.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "fertilidad-01",
-     "yaw": -150,
-     "pitch": -5,
-     "label": "Anterior"
-    },
-    {
-     "to": "fertilidad-03",
-     "yaw": 5,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "fertilidad-03": {
-   "type": "pano",
-   "src": "img/fertilidad/fertilidad-03.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "fertilidad-02",
-     "yaw": -150,
-     "pitch": -5,
-     "label": "Anterior"
-    },
-    {
-     "to": "fertilidad-04",
-     "yaw": 5,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "fertilidad-04": {
-   "type": "pano",
-   "src": "img/fertilidad/fertilidad-04.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "fertilidad-03",
-     "yaw": 55,
-     "pitch": -5,
-     "label": "Anterior"
-    }
-   ]
-  },
-  "habitacion-01": {
-   "type": "pano",
-   "src": "img/habitacion/habitacion-01.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "habitacion-02",
-     "yaw": 94,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "habitacion-02": {
-   "type": "pano",
-   "src": "img/habitacion/habitacion-02.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "habitacion-01",
-     "yaw": -92,
-     "pitch": -5,
-     "label": "Anterior"
-    },
-    {
-     "to": "habitacion-03",
-     "yaw": 60,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "habitacion-03": {
-   "type": "pano",
-   "src": "img/habitacion/habitacion-03.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "habitacion-02",
-     "yaw": -60,
-     "pitch": -5,
-     "label": "Anterior"
-    },
-    {
-     "to": "habitacion-04",
-     "yaw": 150,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "habitacion-04": {
-   "type": "pano",
-   "src": "img/habitacion/habitacion-04.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "habitacion-03",
-     "yaw": -100,
-     "pitch": -5,
-     "label": "Anterior"
-    }
-   ]
-  },
-  "quirofano-01": {
-   "type": "pano",
-   "src": "img/quirofano/quirofano-01.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "quirofano-02",
-     "yaw": 31,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "quirofano-02": {
-   "type": "photo",
-   "src": "img/quirofano/quirofano-02.jpg"
-  },
-  "quirofano-03": {
-   "type": "photo",
-   "src": "img/quirofano/quirofano-03.jpg"
-  },
-  "tomografia-01": {
-   "type": "pano",
-   "src": "img/tomografia/tomografia-01.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "tomografia-02",
-     "yaw": -3,
-     "pitch": -5,
-     "label": "Siguiente"
-    }
-   ]
-  },
-  "tomografia-02": {
-   "type": "pano",
-   "src": "img/tomografia/tomografia-02.jpg",
-   "initialView": {
-    "yaw": 0,
-    "pitch": 0,
-    "fov": 75
-   },
-   "hotspots": [
-    {
-     "to": "tomografia-01",
-     "yaw": 20,
-     "pitch": -5,
-     "label": "Anterior"
-    }
-   ]
-  }
- }
 }
