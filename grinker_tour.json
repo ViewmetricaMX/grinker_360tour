@@ -72,7 +72,7 @@
         {
           "to": "urgencias-02",
           "yaw": 8,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -89,13 +89,13 @@
         {
           "to": "urgencias-01",
           "yaw": -144,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Anterior"
         },
         {
           "to": "urgencias-03",
           "yaw": 70,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -112,13 +112,13 @@
         {
           "to": "urgencias-02",
           "yaw": -150,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Anterior"
         },
         {
           "to": "urgencias-04",
           "yaw": -60,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -135,7 +135,7 @@
         {
           "to": "urgencias-03",
           "yaw": 5,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Anterior"
         }
       ]
@@ -152,7 +152,7 @@
         {
           "to": "consultorio-02",
           "yaw": 30,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -169,13 +169,13 @@
         {
           "to": "consultorio-01",
           "yaw": -83,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Anterior"
         },
         {
           "to": "consultorio-03",
           "yaw": 98,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -192,7 +192,7 @@
         {
           "to": "consultorio-02",
           "yaw": 52,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Anterior"
         }
       ]
@@ -209,7 +209,7 @@
         {
           "to": "fertilidad-02",
           "yaw": 115,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -226,13 +226,13 @@
         {
           "to": "fertilidad-01",
           "yaw": -150,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Anterior"
         },
         {
           "to": "fertilidad-03",
           "yaw": 5,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -249,13 +249,13 @@
         {
           "to": "fertilidad-02",
           "yaw": -150,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Anterior"
         },
         {
           "to": "fertilidad-04",
           "yaw": 5,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -272,7 +272,7 @@
         {
           "to": "fertilidad-03",
           "yaw": 55,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Anterior"
         }
       ]
@@ -289,7 +289,7 @@
         {
           "to": "habitacion-02",
           "yaw": 94,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -306,13 +306,13 @@
         {
           "to": "habitacion-01",
           "yaw": -92,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Anterior"
         },
         {
           "to": "habitacion-03",
           "yaw": 60,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -329,13 +329,13 @@
         {
           "to": "habitacion-02",
           "yaw": -60,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Anterior"
         },
         {
           "to": "habitacion-04",
           "yaw": 150,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -352,7 +352,7 @@
         {
           "to": "habitacion-03",
           "yaw": -100,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Anterior"
         }
       ]
@@ -369,7 +369,7 @@
         {
           "to": "quirofano-02",
           "yaw": 31,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -416,7 +416,7 @@
         {
           "to": "tomografia-02",
           "yaw": -3,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Siguiente"
         }
       ]
@@ -433,10 +433,21 @@
         {
           "to": "tomografia-01",
           "yaw": 20,
-          "pitch": -5,
+          "pitch": -38,
           "label": "Anterior"
         }
       ]
+    }
+  },
+  "viewer": {
+    "inertia": {
+      "enabled": true,
+      "friction": 0.92,
+      "minVelocity": 0.012,
+      "maxVelocity": 2.4
+    },
+    "hotspots": {
+      "floorPitch": -38
     }
   }
 }
