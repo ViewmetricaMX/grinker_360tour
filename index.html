@@ -18,6 +18,13 @@ canvas{display:block;width:100%;height:100%}
 .hs{position:absolute;left:0;top:0;pointer-events:auto;border:0;background:none;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:600 13px "Segoe UI",system-ui,sans-serif}
 .hs i{width:52px;height:52px;border-radius:50%;background:var(--teal);display:grid;place-items:center;font:normal 30px/1 "Segoe UI",sans-serif;box-shadow:0 0 0 6px rgba(0,157,154,.35);transition:transform .15s}
 .hs:hover i,.hs:focus-visible i{transform:scale(1.12)}
+/* Flecha proyectada visualmente sobre el piso, no botón flotante frontal */
+.hs.floor-hs{gap:2px;transform-origin:center center}
+.hs.floor-hs i{width:72px;height:54px;border-radius:50%;background:rgba(0,157,154,.25);border:1px solid rgba(255,255,255,.65);box-shadow:0 0 0 5px rgba(0,157,154,.12),0 8px 18px rgba(0,0,0,.25);transform:perspective(110px) rotateX(48deg);display:grid;place-items:center}
+.hs.floor-hs i svg{width:42px;height:42px;fill:#fff;filter:drop-shadow(0 2px 2px rgba(0,0,0,.45))}
+.hs.floor-hs:hover i,.hs.floor-hs:focus-visible i{transform:perspective(110px) rotateX(48deg) scale(1.13);background:rgba(0,157,154,.55)}
+.hs.floor-hs span{font-size:11px;opacity:.9}
+@media(max-width:560px){.hs.floor-hs i{width:58px;height:44px}.hs.floor-hs i svg{width:34px;height:34px}}
 .hs span{background:var(--glass);padding:2px 9px;border-radius:99px}
 .bar{position:fixed;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:var(--glass);backdrop-filter:blur(10px);padding:6px;border-radius:99px;max-width:calc(100vw - 16px)}
 #dots{top:calc(10px + env(safe-area-inset-top,0px))}
@@ -70,6 +77,9 @@ try{T=await (await fetch('grinker_tour.json')).json()}
 catch(e){document.body.insertAdjacentHTML('beforeend','<div id="err"><p>No se pudo cargar grinker_tour.json.<br>Abre el visor desde un servidor web (no con doble clic en el archivo).</p></div>');return}
 document.title=T.tour+' · Recorrido 360°';
 const areaOf={}; T.areas.forEach(a=>a.scenes.forEach(id=>areaOf[id]=a));
+const inertiaConfig=Object.assign({enabled:true,friction:.92,minVelocity:.012,maxVelocity:2.4},T.viewer?.inertia||{});
+const floorPitch=T.viewer?.hotspots?.floorPitch??-38;
+const floorArrow='<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5 43 27H31v15H17V27H5Z"/></svg>';
 
 // ---- Three.js
 let R;
@@ -84,6 +94,7 @@ const sc=new THREE.Scene(), cam=new THREE.PerspectiveCamera(75,1,.1,1100);
 const g=new THREE.SphereGeometry(500,64,40); g.scale(-1,1,1);
 const mat=new THREE.MeshBasicMaterial(), mesh=new THREE.Mesh(g,mat); mesh.rotation.y=Math.PI; sc.add(mesh); // yaw 0 = centro de la imagen
 let lon=0,lat=0,fov=75,W=1,H=1,cur=null,hsList=[];
+let velocityYaw=0,velocityPitch=0,lastFrame=performance.now(),lastDragTime=0;
 const rad=Math.PI/180, vec=(y,p,r=1)=>new THREE.Vector3(Math.cos(p*rad)*Math.cos(y*rad),Math.sin(p*rad),Math.cos(p*rad)*Math.sin(y*rad)).multiplyScalar(r);
 const cache={}, load=id=>cache[id]||(cache[id]=new Promise((resolve,reject)=>new THREE.TextureLoader().load(T.scenes[id].src,t=>{t.encoding=THREE.sRGBEncoding;resolve(t)},undefined,e=>{delete cache[id];reject(new Error('No se pudo cargar: '+T.scenes[id].src))})));
 const loadPhoto=src=>new Promise((resolve,reject)=>{const probe=new Image();probe.onload=()=>resolve();probe.onerror=()=>reject(new Error('No se pudo cargar: '+src));probe.src=src;});
@@ -97,6 +108,7 @@ async function go(id,keep){
   const s=T.scenes[id];
   if(!s){showLoadError('La escena "'+id+'" no existe en grinker_tour.json.');return;}
   const token=++navToken;
+  velocityYaw=velocityPitch=0;
   retrySceneId=id;
   $('#loadError').hidden=true;
   stage.classList.add('fade');
@@ -130,13 +142,13 @@ function buildHS(s){
   hsBox.classList.toggle('photo-nav',flat);
   (s.hotspots||[]).forEach(h=>{
     const b=document.createElement('button');
-    b.className='hs'+(flat?' photo-hs':'');
+    b.className='hs'+(flat?' photo-hs':' floor-hs');
     b.setAttribute('aria-label',(h.label||'Ir a escena')+' · '+h.to);
-    b.innerHTML='<i>'+(h.label==='Anterior'?'‹':'›')+'</i><span>'+(EDIT?h.to:(h.label||h.to))+'</span>';
+    b.innerHTML='<i>'+(flat?(h.label==='Anterior'?'‹':'›'):floorArrow)+'</i><span>'+(EDIT?h.to:(h.label||h.to))+'</span>';
     b.onclick=e=>{e.stopPropagation();go(h.to,true)};
     b.onpointerdown=e=>e.stopPropagation();
     hsBox.appendChild(b);
-    if(!flat)hsList.push({b,v:vec(h.yaw,h.pitch,400)});
+    if(!flat)hsList.push({b,v:vec(h.yaw,h.pitch??floorPitch,400)});
   });
 }
 // ---- UI
@@ -156,16 +168,16 @@ function buildDots(){
 let ptrs=new Map(),moved=0,pz=1,px=0,py=0,pd=0;
 const applyP=()=>pimg.style.transform=`translate(${px}px,${py}px) scale(${pz})`;
 const isPhoto=()=>!photo.hidden;
-stage.addEventListener('pointerdown',e=>{stage.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);moved=0;pd=0});
+stage.addEventListener('pointerdown',e=>{stage.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);moved=0;pd=0;velocityYaw=velocityPitch=0;lastDragTime=performance.now()});
 stage.addEventListener('pointermove',e=>{
   const p=ptrs.get(e.pointerId); if(!p)return;
   const dx=e.clientX-p[0],dy=e.clientY-p[1]; moved+=Math.abs(dx)+Math.abs(dy);
   if(ptrs.size===2){const [a,b]=[...ptrs.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]); if(pd)zoom(d/pd); pd=d}
   else if(isPhoto()){px+=dx;py+=dy;applyP()}
-  else{const k=fov/H*1.0; lon-=dx*k; lat=Math.max(-85,Math.min(85,lat+dy*k))}
+  else{const k=fov/H*1.0; const dYaw=-dx*k,dPitch=dy*k;lon+=dYaw;lat=Math.max(-85,Math.min(85,lat+dPitch));const now=performance.now(),dt=Math.max(8,now-lastDragTime);lastDragTime=now;const cap=inertiaConfig.maxVelocity;velocityYaw=Math.max(-cap,Math.min(cap,dYaw/dt));velocityPitch=Math.max(-cap,Math.min(cap,dPitch/dt));}
   ptrs.set(e.pointerId,[e.clientX,e.clientY]);
 });
-const up=e=>{ptrs.delete(e.pointerId);pd=0};
+const up=e=>{ptrs.delete(e.pointerId);pd=0;if(ptrs.size||performance.now()-lastDragTime>90||!inertiaConfig.enabled||isPhoto())velocityYaw=velocityPitch=0};
 stage.addEventListener('pointerup',e=>{
   if(EDIT&&moved<6&&!isPhoto()&&ptrs.size===1){
     const v=new THREE.Vector3(e.clientX/W*2-1,-(e.clientY/H)*2+1,.5).unproject(cam).sub(cam.position).normalize();
@@ -184,7 +196,9 @@ addEventListener('resize',resize);resize();
 // ---- Loop
 (function loop(){
   requestAnimationFrame(loop);
+  const now=performance.now(),dt=Math.min(50,now-lastFrame);lastFrame=now;
   if(!cur||isPhoto())return;
+  if(!ptrs.size&&inertiaConfig.enabled){const decay=Math.pow(inertiaConfig.friction,dt/16.667);velocityYaw*=decay;velocityPitch*=decay;if(Math.abs(velocityYaw)<inertiaConfig.minVelocity)velocityYaw=0;if(Math.abs(velocityPitch)<inertiaConfig.minVelocity)velocityPitch=0;lon+=velocityYaw*dt;lat=Math.max(-85,Math.min(85,lat+velocityPitch*dt));if(Math.abs(lat)>=85)velocityPitch=0;}
   cam.fov=fov;cam.updateProjectionMatrix();
   cam.lookAt(vec(lon,lat,10)); R.render(sc,cam);
   cam.updateMatrixWorld();
