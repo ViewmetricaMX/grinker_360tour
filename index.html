@@ -69,6 +69,8 @@ button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 <div id="hud" hidden></div>
 <div id="loadError" hidden role="alert"><strong>No se pudo cargar esta escena</strong><p id="loadErrorText"></p><button id="retryScene" type="button">Reintentar</button></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="analytics-config.js"></script>
+<script src="analytics.js"></script>
 <script>
 (async()=>{
 const $=s=>document.querySelector(s), EDIT=new URLSearchParams(location.search).has('edit');
@@ -133,6 +135,7 @@ async function go(id,keep){
     if(token!==navToken)return;
     await wait(180);
     cur=id;
+    if(!EDIT)window.VM360Analytics?.enter(id);
     if(s.type==='photo'){
       R.domElement.style.display='none';photo.hidden=false;pimg.src=s.src;
       pimg.alt=s.alt||('Fotografía '+id);pz=1;px=py=0;applyP();
@@ -160,7 +163,7 @@ function buildHS(s){
     b.className='hs'+(flat?' photo-hs':' floor-hs');
     b.setAttribute('aria-label',(h.label||'Ir a escena')+' · '+h.to);
     b.innerHTML='<i>'+(flat?(h.label==='Anterior'?'‹':'›'):floorArrow)+'</i><span>'+(EDIT?h.to:(h.label||h.to))+'</span>';
-    b.onclick=e=>{e.stopPropagation();go(h.to,true)};
+    b.onclick=e=>{e.stopPropagation();if(!EDIT)window.VM360Analytics?.click('hotspot',h.to);go(h.to,true)};
     b.onpointerdown=e=>e.stopPropagation();
     hsBox.appendChild(b);
     if(!flat)hsList.push({b,v:vec(h.yaw,h.pitch??floorPitch,400)});
@@ -168,31 +171,31 @@ function buildHS(s){
 }
 // ---- UI
 const areasEl=$('#areas'), dotsEl=$('#dots');
-T.areas.forEach(a=>{const b=document.createElement('button');b.textContent=a.label;b.dataset.a=a.id;b.onclick=()=>go(a.scenes[0]);areasEl.appendChild(b)});
+T.areas.forEach(a=>{const b=document.createElement('button');b.textContent=a.label;b.dataset.a=a.id;b.onclick=()=>{if(!EDIT)window.VM360Analytics?.click('area',a.scenes[0]);go(a.scenes[0])};areasEl.appendChild(b)});
 function markAreas(){areasEl.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.a===areaOf[cur].id))}
 function buildDots(){
   const a=areaOf[cur], i=a.scenes.indexOf(cur); dotsEl.innerHTML='';
-  const step=d=>{const n=a.scenes[i+d]; if(n)go(n)};
+  const step=d=>{const n=a.scenes[i+d]; if(n){if(!EDIT)window.VM360Analytics?.click('step',n);go(n)}};
   const mk=(t,f,on,l)=>{const b=document.createElement('button');b.textContent=t;b.onclick=f;if(on)b.className='on';if(l)b.setAttribute('aria-label',l);dotsEl.appendChild(b)};
   const nm=document.createElement('b');nm.textContent=a.label;dotsEl.appendChild(nm);
   mk('‹',()=>step(-1),0,'Escena anterior');
-  a.scenes.forEach((id,k)=>mk(String(k+1).padStart(2,'0'),()=>go(id),id===cur));
+  a.scenes.forEach((id,k)=>mk(String(k+1).padStart(2,'0'),()=>{if(!EDIT)window.VM360Analytics?.click('scene_button',id);go(id)},id===cur));
   mk('›',()=>step(1),0,'Escena siguiente');
 }
 // ---- Interacción (arrastre, zoom, pinch)
 let ptrs=new Map(),moved=0,pz=1,px=0,py=0,pd=0;
 const applyP=()=>pimg.style.transform=`translate(${px}px,${py}px) scale(${pz})`;
 const isPhoto=()=>!photo.hidden;
-stage.addEventListener('pointerdown',e=>{stage.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);moved=0;pd=0;velocityYaw=velocityPitch=0;lastDragTime=performance.now()});
+stage.addEventListener('pointerdown',e=>{if(!EDIT)window.VM360Analytics?.down(e.pointerId);stage.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);moved=0;pd=0;velocityYaw=velocityPitch=0;lastDragTime=performance.now()});
 stage.addEventListener('pointermove',e=>{
-  const p=ptrs.get(e.pointerId); if(!p)return;
+  const p=ptrs.get(e.pointerId); if(!p)return;if(!EDIT&&Math.abs(e.clientX-p[0])+Math.abs(e.clientY-p[1])>1)window.VM360Analytics?.move(e.pointerId);
   const dx=e.clientX-p[0],dy=e.clientY-p[1]; moved+=Math.abs(dx)+Math.abs(dy);
   if(ptrs.size===2){const [a,b]=[...ptrs.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]); if(pd)zoom(d/pd); pd=d}
   else if(isPhoto()){px+=dx;py+=dy;applyP()}
   else{const k=fov/H*1.0; const dYaw=-dx*k,dPitch=dy*k;lon+=dYaw;lat=Math.max(-85,Math.min(85,lat+dPitch));const now=performance.now(),dt=Math.max(8,now-lastDragTime);lastDragTime=now;const cap=inertiaConfig.maxVelocity;velocityYaw=Math.max(-cap,Math.min(cap,dYaw/dt));velocityPitch=Math.max(-cap,Math.min(cap,dPitch/dt));}
   ptrs.set(e.pointerId,[e.clientX,e.clientY]);
 });
-const up=e=>{ptrs.delete(e.pointerId);pd=0;if(ptrs.size||performance.now()-lastDragTime>90||!inertiaConfig.enabled||isPhoto())velocityYaw=velocityPitch=0};
+const up=e=>{if(!EDIT)window.VM360Analytics?.up(e.pointerId);ptrs.delete(e.pointerId);pd=0;if(ptrs.size||performance.now()-lastDragTime>90||!inertiaConfig.enabled||isPhoto())velocityYaw=velocityPitch=0};
 stage.addEventListener('pointerup',e=>{
   if(EDIT&&moved<6&&!isPhoto()&&ptrs.size===1){
     const v=new THREE.Vector3(e.clientX/W*2-1,-(e.clientY/H)*2+1,.5).unproject(cam).sub(cam.position).normalize();
@@ -202,7 +205,7 @@ stage.addEventListener('pointerup',e=>{
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(snip).then(()=>{h.innerHTML+=' <br><strong>Copiado al portapapeles.</strong>';}).catch(()=>{h.innerHTML+=' <br><strong>Copia manualmente el fragmento.</strong>';});}else{h.innerHTML+=' <br><strong>Copia manualmente el fragmento.</strong>';}
   } up(e)});
 stage.addEventListener('pointercancel',up);
-function zoom(f){if(isPhoto()){pz=Math.max(1,Math.min(5,pz*f));if(pz===1)px=py=0;applyP()}else{fov=Math.max(30,Math.min(100,fov/f))}}
+function zoom(f){if(!EDIT)window.VM360Analytics?.zoom();if(isPhoto()){pz=Math.max(1,Math.min(5,pz*f));if(pz===1)px=py=0;applyP()}else{fov=Math.max(30,Math.min(100,fov/f))}}
 stage.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY<0?1.1:.9)},{passive:false});
 addEventListener('keydown',e=>{const k=e.key;if(k==='ArrowLeft')lon-=4;if(k==='ArrowRight')lon+=4;if(k==='ArrowUp')lat=Math.min(85,lat+3);if(k==='ArrowDown')lat=Math.max(-85,lat-3);if(k==='+')zoom(1.1);if(k==='-')zoom(.9)});
 addEventListener('popstate',()=>{const id=location.hash.slice(1);if(T.scenes[id]&&id!==cur)go(id)});
