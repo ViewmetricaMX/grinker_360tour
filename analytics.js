@@ -23,7 +23,9 @@
   function endScene(){
     if(!scene)return;
     endDrag();
-    metric(scene).stay_ms+=Math.max(0,now()-sceneStart);
+    const ms=Math.max(0,now()-sceneStart);
+    metric(scene).stay_ms+=ms;
+    record('stay',scene,Math.round(ms));
     sceneStart=now();
   }
   function enter(id){if(scene===id)return;endScene();scene=id;sceneStart=now();metric(id).visits++;record('scene_view',id);}
