@@ -5,6 +5,7 @@
  *  Keep this spreadsheet private; do not put credentials in GitHub.
  */
 const SHEET_NAME = 'Eventos';
+const SPREADSHEET_ID = '1L8gjfS9TfC6R5JHUqRKYNphk7_ztkB16KzCo_N46wVc';
 function doPost(e) {
   try {
     const data=JSON.parse(e.postData.contents||'{}');
@@ -21,11 +22,11 @@ function doPost(e) {
     ]);
     const lock=LockService.getScriptLock();lock.waitLock(20000);
     try {
-      const ss=SpreadsheetApp.getActiveSpreadsheet();
+      const ss=SpreadsheetApp.openById(SPREADSHEET_ID);
       const sheet=ss.getSheetByName(SHEET_NAME)||ss.insertSheet(SHEET_NAME);
       if(sheet.getLastRow()===0)sheet.appendRow(['recibido_en','evento_en','tour','sesion','escena','tipo','detalle']);
       if(rows.length)sheet.getRange(sheet.getLastRow()+1,1,rows.length,7).setValues(rows);
     }finally{lock.releaseLock();}
     return ContentService.createTextOutput('ok');
-  }catch(err){return ContentService.createTextOutput('error');}
+  }catch(err){console.error('Analytics collector:',err && err.stack || err);return ContentService.createTextOutput('error: '+String(err.message||err));}
 }
